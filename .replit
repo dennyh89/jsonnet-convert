@@ -1,0 +1,33 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Kong to OpenAPI Converter"
+
+[[workflows.workflow]]
+name = "Kong to OpenAPI Converter"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cp attached_assets/Pasted--services-host-httpbin-local-id-382433ac-c0f6-517e-b5ab-203c47fd-1742219259189.txt kong_config.json && jsonnet test_converter.jsonnet | jq"
+
+[deployment]
+run = ["sh", "-c", "cp attached_assets/Pasted--services-host-httpbin-local-id-382433ac-c0f6-517e-b5ab-203c47fd-1742219259189.txt kong_config.json && jsonnet -J . --tla-file kongConfig=\"kong_config.json\" -e 'local converter = import \"kong_to_openapi.jsonnet\"; converter(std.parseJson(std.extVar(\"kongConfig\")))' > openapi_spec.json && echo \"Conversion complete. OpenAPI specification written to openapi_spec.json\" && cat openapi_spec.json"]

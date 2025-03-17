@@ -31,7 +31,7 @@ This tool takes Kong gateway configuration (in JSON/YAML format as used by Kong 
 2. Run the converter:
 
 ```bash
-jsonnet -J . -e 'local converter = import "kong_to_openapi.jsonnet"; converter.convert(import "kong_config.json")' | jq > openapi_spec.json
+jsonnet -J . test_converter.jsonnet | jq > openapi_spec.json
 ```
 
 Or use the included example script:
